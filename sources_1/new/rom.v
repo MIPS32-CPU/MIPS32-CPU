@@ -7,7 +7,7 @@ module rom(
 );
 
     reg [31:0] rom[0:3];
-    initial $readmemh("/sources_1/new/rom.data", rom);
+    initial $readmemh("E:Documents/bianchengwenjian/mips32-CPU/dev/sources_1/new/rom.data", rom);
     
     always @ (*) begin
         if(rst == 1'b1) begin

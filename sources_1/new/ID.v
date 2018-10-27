@@ -90,6 +90,51 @@ module ID(
                         end
                     endcase
                 end
+                `OP_ANDI: begin
+                    readEnable1_o <= 1'b1;
+                    readAddr1_o <= inst_rs;
+                    oprand1_o <= readData1_i;
+                    readEnable2_o <= 1'b0;
+                    readAddr2_o <= 5'b0;
+                    imm <= {16'b0, inst_i[15:0]};
+                    oprand2_o <= imm;
+                    writeEnable_o <= 1'b1;
+                    writeAddr_o <= inst_rt; 
+                    branchEnable_o <= 1'b0;
+                    branchAddr_o <= 32'b0;
+                    ALUop_o <= `ALU_AND;
+                    instValid <= 1'b1;
+                end
+                `OP_XORI: begin
+                    readEnable1_o <= 1'b1;
+                    readAddr1_o <= inst_rs;
+                    oprand1_o <= readData1_i;
+                    readEnable2_o <= 1'b0;
+                    readAddr2_o <= 5'b0;
+                    imm <= {16'b0, inst_i[15:0]};
+                    oprand2_o <= imm;
+                    writeEnable_o <= 1'b1;
+                    writeAddr_o <= inst_rt; 
+                    branchEnable_o <= 1'b0;
+                    branchAddr_o <= 32'b0;
+                    ALUop_o <= `ALU_XOR;
+                    instValid <= 1'b1;
+                end
+                `OP_LUI: begin
+                    readEnable1_o <= 1'b1;
+                    readAddr1_o <= 5'b0;
+                    readEnable2_o <= 1'b0;
+                    readAddr2_o <= 5'b0;
+                    writeEnable_o <= 1'b1;
+                    writeAddr_o <= inst_rt;
+                    branchEnable_o <= 1'b0;
+                    branchAddr_o <= 32'b0;
+                    imm <= {inst_i[15:0], 16'b0};
+                    oprand1_o <= readData1_i;
+                    oprand2_o <= imm;
+                    ALUop_o <= `ALU_OR;
+                    instValid <= 1'b1;
+                end
                 default: begin
                 end
             endcase
