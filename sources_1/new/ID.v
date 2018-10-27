@@ -61,6 +61,35 @@ module ID(
                          ALUop_o <= `ALU_OR;
                          instValid <= 1'b1;
                 end
+                `OP_SPECIAL: begin
+                    readEnable1_o <= 1'b1;
+                    readAddr1_o <= inst_rs;
+                    oprand1_o <= readData1_i;
+                    readEnable2_o <= 1'b1;
+                    readAddr2_o <= inst_rt;
+                    oprand2_o <= readData2_i;
+                    writeEnable_o <= 1'b1;
+                    writeAddr_o <= inst_rd;
+                    branchEnable_o <= 1'b0;
+                    branchAddr_o <= 32'b0;
+                    instValid <= 1'b1;
+                    case (inst_func)
+                        `FUNC_AND: begin
+                                ALUop_o <= `ALU_AND;
+                        end
+                        `FUNC_OR: begin
+                                ALUop_o <= `ALU_OR;
+                        end
+                        `FUNC_XOR: begin
+                                ALUop_o <= `ALU_XOR;
+                        end
+                        `FUNC_NOR: begin
+                                ALUop_o <= `ALU_NOR;
+                        end
+                        default: begin
+                        end
+                    endcase
+                end
                 default: begin
                 end
             endcase

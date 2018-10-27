@@ -29,6 +29,21 @@ module EX(
                          writeEnable_o <= 1'b1;
                          writeAddr_o <= writeAddr_i;
                 end
+                `ALU_AND: begin
+                         result_o <= oprand1_i & oprand2_i;
+                         writeEnable_o <= 1'b1;
+                         writeAddr_o <= writeAddr_i;
+                end
+                `ALU_XOR: begin
+                         result_o <= oprand1_i ^ oprand2_i;
+                         writeEnable_o <= 1'b1;
+                         writeAddr_o <= writeAddr_i;
+                end
+                `ALU_NOR: begin
+                         result_o <= ~(oprand1_i | oprand2_i);
+                         writeEnable_o <= 1'b1;
+                         writeAddr_o <= writeAddr_i;
+                end
                 default: begin
                 end
             endcase
