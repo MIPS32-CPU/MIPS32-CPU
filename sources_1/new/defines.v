@@ -89,7 +89,7 @@
 `define ALU_OR                  5'b00001
 `define ALU_XOR                 5'b00011
 `define ALU_NOR                 5'b00100
-`define ALU_SLL
-`define ALU_SRL
-`define ALU_SRA
+`define ALU_SLL                 5'b00101
+`define ALU_SRL                 5'b00110
+`define ALU_SRA                 5'b00111
 

@@ -44,6 +44,22 @@ module EX(
                          writeEnable_o <= 1'b1;
                          writeAddr_o <= writeAddr_i;
                 end
+                `ALU_SLL: begin
+                        result_o <= oprand2_i << oprand1_i[4:0];
+                        writeEnable_o <= 1'b1;
+                        writeAddr_o <= writeAddr_i;
+                end
+                `ALU_SRL: begin
+                        result_o <= oprand2_i >> oprand1_i[4:0];
+                        writeEnable_o <= 1'b1;
+                        writeAddr_o <= writeAddr_i;
+                end
+                `ALU_SRA: begin
+                        result_o <= ({32{oprand2_i[31]}} << (6'd32-{1'b0,oprand1_i[4:0]}))
+                         | oprand2_i >> oprand1_i[4:0];
+                        writeEnable_o <= 1'b1;
+                        writeAddr_o <= writeAddr_i;
+                end
                 default: begin
                 end
             endcase
