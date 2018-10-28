@@ -11,6 +11,6 @@ Group members:
 * Yan Jingya
 
 adding instruction:
-and or xor nor
-andi xori lui
-sll srl sra sllv srlv srav
+* and or xor nor
+* andi xori lui
+* sll srl sra sllv srlv srav
