@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="SOPC_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="SOPC_tb" />
+            <top_module name="glbl" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="233270000fs"></ZoomStartTime>
+      <ZoomEndTime time="390670001fs"></ZoomEndTime>
+      <Cursor1Time time="1000000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="155"></NameColumnWidth>
+      <ValueColumnWidth column_width="65"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="40" />
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/romData_i" type="array">
+      <obj_property name="ElementShortName">romData_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">romData_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/romAddr_o" type="array">
+      <obj_property name="ElementShortName">romAddr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">romAddr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/pc_pc_o" type="array">
+      <obj_property name="ElementShortName">pc_pc_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_pc_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/IF_ID_pc_o" type="array">
+      <obj_property name="ElementShortName">IF_ID_pc_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">IF_ID_pc_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/IF_ID_inst_o" type="array">
+      <obj_property name="ElementShortName">IF_ID_inst_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">IF_ID_inst_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/reg_readData1_o" type="array">
+      <obj_property name="ElementShortName">reg_readData1_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_readData1_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/reg_readData2_o" type="array">
+      <obj_property name="ElementShortName">reg_readData2_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_readData2_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_readAddr1_o" type="array">
+      <obj_property name="ElementShortName">ID_readAddr1_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_readAddr1_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_readAddr2_o" type="array">
+      <obj_property name="ElementShortName">ID_readAddr2_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_readAddr2_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_readEnable1_o" type="logic">
+      <obj_property name="ElementShortName">ID_readEnable1_o</obj_property>
+      <obj_property name="ObjectShortName">ID_readEnable1_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_readEnable2_o" type="logic">
+      <obj_property name="ElementShortName">ID_readEnable2_o</obj_property>
+      <obj_property name="ObjectShortName">ID_readEnable2_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_writeEnable_o" type="logic">
+      <obj_property name="ElementShortName">ID_writeEnable_o</obj_property>
+      <obj_property name="ObjectShortName">ID_writeEnable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_writeAddr_o" type="array">
+      <obj_property name="ElementShortName">ID_writeAddr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_writeAddr_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_oprand1_o" type="array">
+      <obj_property name="ElementShortName">ID_oprand1_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_oprand1_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_oprand2_o" type="array">
+      <obj_property name="ElementShortName">ID_oprand2_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_oprand2_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_ALUop_o" type="array">
+      <obj_property name="ElementShortName">ID_ALUop_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_ALUop_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_branchEnable_o" type="logic">
+      <obj_property name="ElementShortName">ID_branchEnable_o</obj_property>
+      <obj_property name="ObjectShortName">ID_branchEnable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_branchAddr_o" type="array">
+      <obj_property name="ElementShortName">ID_branchAddr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_branchAddr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_EX_ALUop_o" type="array">
+      <obj_property name="ElementShortName">ID_EX_ALUop_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_EX_ALUop_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_EX_oprand1_o" type="array">
+      <obj_property name="ElementShortName">ID_EX_oprand1_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_EX_oprand1_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_EX_oprand2_o" type="array">
+      <obj_property name="ElementShortName">ID_EX_oprand2_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_EX_oprand2_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_EX_writeAddr_o" type="array">
+      <obj_property name="ElementShortName">ID_EX_writeAddr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_EX_writeAddr_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/ID_EX_writeEnable_o" type="logic">
+      <obj_property name="ElementShortName">ID_EX_writeEnable_o</obj_property>
+      <obj_property name="ObjectShortName">ID_EX_writeEnable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/EX_result_o" type="array">
+      <obj_property name="ElementShortName">EX_result_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_result_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/EX_writeAddr_o" type="array">
+      <obj_property name="ElementShortName">EX_writeAddr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_writeAddr_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/EX_writeEnable_o" type="logic">
+      <obj_property name="ElementShortName">EX_writeEnable_o</obj_property>
+      <obj_property name="ObjectShortName">EX_writeEnable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/EX_MEM_result_o" type="array">
+      <obj_property name="ElementShortName">EX_MEM_result_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_MEM_result_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/EX_MEM_writeAddr_o" type="array">
+      <obj_property name="ElementShortName">EX_MEM_writeAddr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_MEM_writeAddr_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/EX_MEM_writeEnable_o" type="logic">
+      <obj_property name="ElementShortName">EX_MEM_writeEnable_o</obj_property>
+      <obj_property name="ObjectShortName">EX_MEM_writeEnable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/MEM_result_o" type="array">
+      <obj_property name="ElementShortName">MEM_result_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_result_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/MEM_writeAddr_o" type="array">
+      <obj_property name="ElementShortName">MEM_writeAddr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_writeAddr_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/MEM_writeEnable_o" type="logic">
+      <obj_property name="ElementShortName">MEM_writeEnable_o</obj_property>
+      <obj_property name="ObjectShortName">MEM_writeEnable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/MEM_WB_result_o" type="array">
+      <obj_property name="ElementShortName">MEM_WB_result_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_WB_result_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/MEM_WB_writeAddr_o" type="array">
+      <obj_property name="ElementShortName">MEM_WB_writeAddr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">MEM_WB_writeAddr_o[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/MEM_WB_writeEnable_o" type="logic">
+      <obj_property name="ElementShortName">MEM_WB_writeEnable_o</obj_property>
+      <obj_property name="ObjectShortName">MEM_WB_writeEnable_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/rom0/pc_i" type="array">
+      <obj_property name="ElementShortName">pc_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/rom0/inst_o" type="array">
+      <obj_property name="ElementShortName">inst_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/rom0/rom" type="array">
+      <obj_property name="ElementShortName">rom[0:3][31:0]</obj_property>
+      <obj_property name="ObjectShortName">rom[0:3][31:0]</obj_property>
+   </wvobject>
+</wave_config>
