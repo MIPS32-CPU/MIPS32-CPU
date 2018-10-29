@@ -116,9 +116,227 @@ module ID(
 					branchEnable_o <= 1'b1;
 					instValid <= 1'b1;
                 end
+                `OP_SPECIAL: begin
+                    case (inst_shamt)
+                        5'b00000: begin
+                            case (inst_func)
+                                `FUNC_AND: begin
+                                        readEnable1_o <= 1'b1;
+                                        readAddr1_o <= inst_rs;
+                                        oprand1_o <= readData1_i;
+                                        readEnable2_o <= 1'b1;
+                                        readAddr2_o <= inst_rt;
+                                        oprand2_o <= readData2_i;
+                                        writeEnable_o <= 1'b1;
+                                        writeAddr_o <= inst_rd;
+                                        branchEnable_o <= 1'b0;
+                                        branchAddr_o <= 32'b0;
+                                        instValid <= 1'b1;
+                                        ALUop_o <= `ALU_AND;
+                                end
+                                `FUNC_OR: begin
+                                        readEnable1_o <= 1'b1;
+                                        readAddr1_o <= inst_rs;
+                                        oprand1_o <= readData1_i;
+                                        readEnable2_o <= 1'b1;
+                                        readAddr2_o <= inst_rt;
+                                        oprand2_o <= readData2_i;
+                                        writeEnable_o <= 1'b1;
+                                        writeAddr_o <= inst_rd;
+                                        branchEnable_o <= 1'b0;
+                                        branchAddr_o <= 32'b0;
+                                        instValid <= 1'b1;
+                                        ALUop_o <= `ALU_OR;
+                                end
+                                `FUNC_XOR: begin
+                                        readEnable1_o <= 1'b1;
+                                        readAddr1_o <= inst_rs;
+                                        oprand1_o <= readData1_i;
+                                        readEnable2_o <= 1'b1;
+                                        readAddr2_o <= inst_rt;
+                                        oprand2_o <= readData2_i;
+                                        writeEnable_o <= 1'b1;
+                                        writeAddr_o <= inst_rd;
+                                        branchEnable_o <= 1'b0;
+                                        branchAddr_o <= 32'b0;
+                                        instValid <= 1'b1;
+                                        ALUop_o <= `ALU_XOR;
+                                end
+                                `FUNC_NOR: begin
+                                        readEnable1_o <= 1'b1;
+                                        readAddr1_o <= inst_rs;
+                                        oprand1_o <= readData1_i;
+                                        readEnable2_o <= 1'b1;
+                                        readAddr2_o <= inst_rt;
+                                        oprand2_o <= readData2_i;
+                                        writeEnable_o <= 1'b1;
+                                        writeAddr_o <= inst_rd;
+                                        branchEnable_o <= 1'b0;
+                                        branchAddr_o <= 32'b0;
+                                        instValid <= 1'b1;
+                                        ALUop_o <= `ALU_NOR;
+                                end
+                                `FUNC_SLLV: begin
+                                        readEnable1_o <= 1'b1;
+                                        readAddr1_o <= inst_rs;
+                                        oprand1_o <= readData1_i;
+                                        readEnable2_o <= 1'b1;
+                                        readAddr2_o <= inst_rt;
+                                        oprand2_o <= readData2_i;
+                                        writeEnable_o <= 1'b1;
+                                        writeAddr_o <= inst_rd;
+                                        branchEnable_o <= 1'b0;
+                                        branchAddr_o <= 32'b0;
+                                        instValid <= 1'b1;
+                                        ALUop_o <= `ALU_SLL;
+                                end
+                                `FUNC_SRLV: begin
+                                        readEnable1_o <= 1'b1;
+                                        readAddr1_o <= inst_rs;
+                                        oprand1_o <= readData1_i;
+                                        readEnable2_o <= 1'b1;
+                                        readAddr2_o <= inst_rt;
+                                        oprand2_o <= readData2_i;
+                                        writeEnable_o <= 1'b1;
+                                        writeAddr_o <= inst_rd;
+                                        branchEnable_o <= 1'b0;
+                                        branchAddr_o <= 32'b0;
+                                        instValid <= 1'b1;
+                                        ALUop_o <= `ALU_SRL;
+                                end
+                                `FUNC_SRAV: begin
+                                        readEnable1_o <= 1'b1;
+                                        readAddr1_o <= inst_rs;
+                                        oprand1_o <= readData1_i;
+                                        readEnable2_o <= 1'b1;
+                                        readAddr2_o <= inst_rt;
+                                        oprand2_o <= readData2_i;
+                                        writeEnable_o <= 1'b1;
+                                        writeAddr_o <= inst_rd;
+                                        branchEnable_o <= 1'b0;
+                                        branchAddr_o <= 32'b0;
+                                        instValid <= 1'b1;
+                                        ALUop_o <= `ALU_SRA;
+                                end
+                                default: begin
+                                end
+                            endcase
+                        end
+                        default: begin
+                        end
+                    endcase
+                end
+                `OP_ANDI: begin
+                    readEnable1_o <= 1'b1;
+                    readAddr1_o <= inst_rs;
+                    oprand1_o <= readData1_i;
+                    readEnable2_o <= 1'b0;
+                    readAddr2_o <= 5'b0;
+                    imm <= {16'b0, inst_i[15:0]};
+                    oprand2_o <= imm;
+                    writeEnable_o <= 1'b1;
+                    writeAddr_o <= inst_rt; 
+                    branchEnable_o <= 1'b0;
+                    branchAddr_o <= 32'b0;
+                    ALUop_o <= `ALU_AND;
+                    instValid <= 1'b1;
+                end
+                `OP_XORI: begin
+                    readEnable1_o <= 1'b1;
+                    readAddr1_o <= inst_rs;
+                    oprand1_o <= readData1_i;
+                    readEnable2_o <= 1'b0;
+                    readAddr2_o <= 5'b0;
+                    imm <= {16'b0, inst_i[15:0]};
+                    oprand2_o <= imm;
+                    writeEnable_o <= 1'b1;
+                    writeAddr_o <= inst_rt; 
+                    branchEnable_o <= 1'b0;
+                    branchAddr_o <= 32'b0;
+                    ALUop_o <= `ALU_XOR;
+                    instValid <= 1'b1;
+                end
+                `OP_LUI: begin
+                    readEnable1_o <= 1'b1;
+                    readAddr1_o <= 5'b0;
+                    readEnable2_o <= 1'b0;
+                    readAddr2_o <= 5'b0;
+                    writeEnable_o <= 1'b1;
+                    writeAddr_o <= inst_rt;
+                    branchEnable_o <= 1'b0;
+                    branchAddr_o <= 32'b0;
+                    imm <= {inst_i[15:0], 16'b0};
+                    oprand1_o <= readData1_i;
+                    oprand2_o <= imm;
+                    ALUop_o <= `ALU_OR;
+                    instValid <= 1'b1;
+                end
                 default: begin
                 end
             endcase
+            if (inst_i[31:21] == 11'b00000000000) begin
+                case (inst_func)
+                `FUNC_SLL: begin
+                        readEnable1_o <= 1'b0;
+                        readAddr1_o <= 5'b0;
+                        readEnable2_o <= 1'b1;
+                        readAddr2_o <= inst_rt;
+                        oprand2_o <= readData2_i;
+                        writeEnable_o <= 1'b1;
+                        writeAddr_o <= inst_rd;
+                        branchEnable_o <= 1'b0;
+                        branchAddr_o <= 32'b0;
+                        imm[4:0] <= inst_shamt;
+                        oprand1_o <= imm;
+                        ALUop_o <= `ALU_SLL;
+                        if(inst_rs == 5'b00000) begin
+                            instValid <= 1'b1;
+                        end else begin
+                            instValid <= 1'b0;
+                        end
+                end
+                `FUNC_SRL: begin
+                        readEnable1_o <= 1'b0;
+                        readAddr1_o <= 5'b0;
+                        readEnable2_o <= 1'b1;
+                        readAddr2_o <= inst_rt;
+                        oprand2_o <= readData2_i;
+                        writeEnable_o <= 1'b1;
+                        writeAddr_o <= inst_rd;
+                        branchEnable_o <= 1'b0;
+                        branchAddr_o <= 32'b0;
+                        imm[4:0] <= inst_shamt;
+                        oprand1_o <= imm;
+                        ALUop_o <= `ALU_SRL;
+                        if(inst_rs == 5'b00000) begin
+                            instValid <= 1'b1;
+                        end else begin
+                            instValid <= 1'b0;
+                        end
+                end
+                `FUNC_SRA: begin
+                        readEnable1_o <= 1'b0;
+                        readAddr1_o <= 5'b0;
+                        readEnable2_o <= 1'b1;
+                        readAddr2_o <= inst_rt;
+                        oprand2_o <= readData2_i;
+                        writeEnable_o <= 1'b1;
+                        writeAddr_o <= inst_rd;
+                        branchEnable_o <= 1'b0;
+                        branchAddr_o <= 32'b0;
+                        imm[4:0] <= inst_shamt;
+                        oprand1_o <= imm;
+                        ALUop_o <= `ALU_SRA;
+                        if(inst_rs == 5'b00000) begin
+                            instValid <= 1'b1;
+                        end else begin
+                            instValid <= 1'b0;
+                        end
+                end
+                default: begin
+                end
+                endcase
+            end
         end
     end
     
