@@ -12,7 +12,7 @@ module registers(
     output reg[31:0] readData1_o,
     output reg[31:0] readData2_o
 );
-    reg[31:0] register[4:0];
+    reg[31:0] register[31:0];
     
     //write Registers
     always @ (posedge clk) begin
@@ -31,6 +31,8 @@ module registers(
             readData1_o <= 32'b0;
         end else if(readAddr1_i == 5'b0) begin
             readData1_o <= 32'b0;
+        end else if(readAddr1_i == writeAddr_i && writeEnable_i == 1'b1) begin
+        	readData1_o <= writeData_i;
         end else begin
             readData1_o <= register[readAddr1_i];
         end
@@ -44,6 +46,8 @@ module registers(
                 readData2_o <= 32'b0;
             end else if(readAddr2_i == 5'b0) begin
                 readData2_o <= 32'b0;
+            end else if(readAddr2_i == writeAddr_i && writeEnable_i == 1'b1) begin
+            	readData2_o <= writeData_i;
             end else begin
                 readData2_o <= register[readAddr2_i];
             end
