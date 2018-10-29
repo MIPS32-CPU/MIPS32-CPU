@@ -6,7 +6,7 @@ module rom(
     output reg [31:0] inst_o
 );
 
-    reg [31:0] rom[0:4];
+    reg [31:0] rom[0:2];
     initial $readmemh("D:/jiyuan/MIPS32/MIPS32.srcs/sources_1/new/rom.data", rom);
     
     always @ (*) begin

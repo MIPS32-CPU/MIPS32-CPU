@@ -40,17 +40,17 @@ module registers(
     
     //read Register_2
     always @ (*) begin
-            if(rst == 1'b1) begin
-                readData2_o <= 32'b0;
-            end else if(readEnable2_i == 1'b0) begin
-                readData2_o <= 32'b0;
-            end else if(readAddr2_i == 5'b0) begin
-                readData2_o <= 32'b0;
-            end else if(readAddr2_i == writeAddr_i && writeEnable_i == 1'b1) begin
-            	readData2_o <= writeData_i;
-            end else begin
-                readData2_o <= register[readAddr2_i];
-            end
+		if(rst == 1'b1) begin
+			readData2_o <= 32'b0;
+		end else if(readEnable2_i == 1'b0) begin
+			readData2_o <= 32'b0;
+		end else if(readAddr2_i == 5'b0) begin
+			readData2_o <= 32'b0;
+		end else if(readAddr2_i == writeAddr_i && writeEnable_i == 1'b1) begin
+			readData2_o <= writeData_i;
+		end else begin
+			readData2_o <= register[readAddr2_i];
+		end
      end
      
 endmodule            

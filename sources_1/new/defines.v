@@ -81,9 +81,10 @@
 
 //****************ALU Operations Macro definations********************
 `define ALU_NOP                 5'b00000
+`define ALU_MOV					5'b00010
 `define ALU_ADD
 `define ALU_SUB
-`define ALU_MULT
+`define ALU_MULT				5'b00011
 `define ALU_DIV
 `define ALU_AND
 `define ALU_OR                  5'b00001
