@@ -123,10 +123,8 @@ module ID(
                                 `FUNC_AND: begin
                                         readEnable1_o <= 1'b1;
                                         readAddr1_o <= inst_rs;
-                                        oprand1_o <= readData1_i;
                                         readEnable2_o <= 1'b1;
                                         readAddr2_o <= inst_rt;
-                                        oprand2_o <= readData2_i;
                                         writeEnable_o <= 1'b1;
                                         writeAddr_o <= inst_rd;
                                         branchEnable_o <= 1'b0;
@@ -137,10 +135,8 @@ module ID(
                                 `FUNC_OR: begin
                                         readEnable1_o <= 1'b1;
                                         readAddr1_o <= inst_rs;
-                                        oprand1_o <= readData1_i;
                                         readEnable2_o <= 1'b1;
                                         readAddr2_o <= inst_rt;
-                                        oprand2_o <= readData2_i;
                                         writeEnable_o <= 1'b1;
                                         writeAddr_o <= inst_rd;
                                         branchEnable_o <= 1'b0;
@@ -151,10 +147,8 @@ module ID(
                                 `FUNC_XOR: begin
                                         readEnable1_o <= 1'b1;
                                         readAddr1_o <= inst_rs;
-                                        oprand1_o <= readData1_i;
                                         readEnable2_o <= 1'b1;
                                         readAddr2_o <= inst_rt;
-                                        oprand2_o <= readData2_i;
                                         writeEnable_o <= 1'b1;
                                         writeAddr_o <= inst_rd;
                                         branchEnable_o <= 1'b0;
@@ -165,10 +159,8 @@ module ID(
                                 `FUNC_NOR: begin
                                         readEnable1_o <= 1'b1;
                                         readAddr1_o <= inst_rs;
-                                        oprand1_o <= readData1_i;
                                         readEnable2_o <= 1'b1;
                                         readAddr2_o <= inst_rt;
-                                        oprand2_o <= readData2_i;
                                         writeEnable_o <= 1'b1;
                                         writeAddr_o <= inst_rd;
                                         branchEnable_o <= 1'b0;
@@ -179,10 +171,8 @@ module ID(
                                 `FUNC_SLLV: begin
                                         readEnable1_o <= 1'b1;
                                         readAddr1_o <= inst_rs;
-                                        oprand1_o <= readData1_i;
                                         readEnable2_o <= 1'b1;
                                         readAddr2_o <= inst_rt;
-                                        oprand2_o <= readData2_i;
                                         writeEnable_o <= 1'b1;
                                         writeAddr_o <= inst_rd;
                                         branchEnable_o <= 1'b0;
@@ -193,10 +183,8 @@ module ID(
                                 `FUNC_SRLV: begin
                                         readEnable1_o <= 1'b1;
                                         readAddr1_o <= inst_rs;
-                                        oprand1_o <= readData1_i;
                                         readEnable2_o <= 1'b1;
                                         readAddr2_o <= inst_rt;
-                                        oprand2_o <= readData2_i;
                                         writeEnable_o <= 1'b1;
                                         writeAddr_o <= inst_rd;
                                         branchEnable_o <= 1'b0;
@@ -207,10 +195,8 @@ module ID(
                                 `FUNC_SRAV: begin
                                         readEnable1_o <= 1'b1;
                                         readAddr1_o <= inst_rs;
-                                        oprand1_o <= readData1_i;
                                         readEnable2_o <= 1'b1;
                                         readAddr2_o <= inst_rt;
-                                        oprand2_o <= readData2_i;
                                         writeEnable_o <= 1'b1;
                                         writeAddr_o <= inst_rd;
                                         branchEnable_o <= 1'b0;
@@ -229,11 +215,9 @@ module ID(
                 `OP_ANDI: begin
                     readEnable1_o <= 1'b1;
                     readAddr1_o <= inst_rs;
-                    oprand1_o <= readData1_i;
                     readEnable2_o <= 1'b0;
                     readAddr2_o <= 5'b0;
                     imm <= {16'b0, inst_i[15:0]};
-                    oprand2_o <= imm;
                     writeEnable_o <= 1'b1;
                     writeAddr_o <= inst_rt; 
                     branchEnable_o <= 1'b0;
@@ -244,11 +228,9 @@ module ID(
                 `OP_XORI: begin
                     readEnable1_o <= 1'b1;
                     readAddr1_o <= inst_rs;
-                    oprand1_o <= readData1_i;
                     readEnable2_o <= 1'b0;
                     readAddr2_o <= 5'b0;
                     imm <= {16'b0, inst_i[15:0]};
-                    oprand2_o <= imm;
                     writeEnable_o <= 1'b1;
                     writeAddr_o <= inst_rt; 
                     branchEnable_o <= 1'b0;
@@ -266,8 +248,6 @@ module ID(
                     branchEnable_o <= 1'b0;
                     branchAddr_o <= 32'b0;
                     imm <= {inst_i[15:0], 16'b0};
-                    oprand1_o <= readData1_i;
-                    oprand2_o <= imm;
                     ALUop_o <= `ALU_OR;
                     instValid <= 1'b1;
                 end
@@ -281,13 +261,11 @@ module ID(
                         readAddr1_o <= 5'b0;
                         readEnable2_o <= 1'b1;
                         readAddr2_o <= inst_rt;
-                        oprand2_o <= readData2_i;
                         writeEnable_o <= 1'b1;
                         writeAddr_o <= inst_rd;
                         branchEnable_o <= 1'b0;
                         branchAddr_o <= 32'b0;
                         imm[4:0] <= inst_shamt;
-                        oprand1_o <= imm;
                         ALUop_o <= `ALU_SLL;
                         if(inst_rs == 5'b00000) begin
                             instValid <= 1'b1;
@@ -300,13 +278,11 @@ module ID(
                         readAddr1_o <= 5'b0;
                         readEnable2_o <= 1'b1;
                         readAddr2_o <= inst_rt;
-                        oprand2_o <= readData2_i;
                         writeEnable_o <= 1'b1;
                         writeAddr_o <= inst_rd;
                         branchEnable_o <= 1'b0;
                         branchAddr_o <= 32'b0;
                         imm[4:0] <= inst_shamt;
-                        oprand1_o <= imm;
                         ALUop_o <= `ALU_SRL;
                         if(inst_rs == 5'b00000) begin
                             instValid <= 1'b1;
@@ -319,13 +295,11 @@ module ID(
                         readAddr1_o <= 5'b0;
                         readEnable2_o <= 1'b1;
                         readAddr2_o <= inst_rt;
-                        oprand2_o <= readData2_i;
                         writeEnable_o <= 1'b1;
                         writeAddr_o <= inst_rd;
                         branchEnable_o <= 1'b0;
                         branchAddr_o <= 32'b0;
                         imm[4:0] <= inst_shamt;
-                        oprand1_o <= imm;
                         ALUop_o <= `ALU_SRA;
                         if(inst_rs == 5'b00000) begin
                             instValid <= 1'b1;
