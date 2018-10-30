@@ -12,5 +12,6 @@ Group members:
 
 adding instruction:
 * and or xor nor
-* andi xori lui
+* andi ori xori lui
 * sll srl sra sllv srlv srav
+* j
