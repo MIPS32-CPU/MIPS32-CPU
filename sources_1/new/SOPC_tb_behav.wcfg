@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="233270000fs"></ZoomStartTime>
-      <ZoomEndTime time="390670001fs"></ZoomEndTime>
+      <ZoomStartTime time="731460000fs"></ZoomStartTime>
+      <ZoomEndTime time="836760001fs"></ZoomEndTime>
       <Cursor1Time time="1000000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="155"></NameColumnWidth>
-      <ValueColumnWidth column_width="65"></ValueColumnWidth>
+      <NameColumnWidth column_width="189"></NameColumnWidth>
+      <ValueColumnWidth column_width="80"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="40" />
+   <WVObjectSize size="57" />
    <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -120,10 +120,6 @@
       <obj_property name="ElementShortName">ID_EX_writeEnable_o</obj_property>
       <obj_property name="ObjectShortName">ID_EX_writeEnable_o</obj_property>
    </wvobject>
-   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/EX_result_o" type="array">
-      <obj_property name="ElementShortName">EX_result_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">EX_result_o[31:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/EX_writeAddr_o" type="array">
       <obj_property name="ElementShortName">EX_writeAddr_o[4:0]</obj_property>
       <obj_property name="ObjectShortName">EX_writeAddr_o[4:0]</obj_property>
@@ -131,10 +127,6 @@
    <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/EX_writeEnable_o" type="logic">
       <obj_property name="ElementShortName">EX_writeEnable_o</obj_property>
       <obj_property name="ObjectShortName">EX_writeEnable_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/EX_MEM_result_o" type="array">
-      <obj_property name="ElementShortName">EX_MEM_result_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">EX_MEM_result_o[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/EX_MEM_writeAddr_o" type="array">
       <obj_property name="ElementShortName">EX_MEM_writeAddr_o[4:0]</obj_property>
@@ -144,10 +136,6 @@
       <obj_property name="ElementShortName">EX_MEM_writeEnable_o</obj_property>
       <obj_property name="ObjectShortName">EX_MEM_writeEnable_o</obj_property>
    </wvobject>
-   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/MEM_result_o" type="array">
-      <obj_property name="ElementShortName">MEM_result_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">MEM_result_o[31:0]</obj_property>
-   </wvobject>
    <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/MEM_writeAddr_o" type="array">
       <obj_property name="ElementShortName">MEM_writeAddr_o[4:0]</obj_property>
       <obj_property name="ObjectShortName">MEM_writeAddr_o[4:0]</obj_property>
@@ -155,10 +143,6 @@
    <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/MEM_writeEnable_o" type="logic">
       <obj_property name="ElementShortName">MEM_writeEnable_o</obj_property>
       <obj_property name="ObjectShortName">MEM_writeEnable_o</obj_property>
-   </wvobject>
-   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/MEM_WB_result_o" type="array">
-      <obj_property name="ElementShortName">MEM_WB_result_o[31:0]</obj_property>
-      <obj_property name="ObjectShortName">MEM_WB_result_o[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/MEM_WB_writeAddr_o" type="array">
       <obj_property name="ElementShortName">MEM_WB_writeAddr_o[4:0]</obj_property>
@@ -177,7 +161,91 @@
       <obj_property name="ObjectShortName">inst_o[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/SOPC_tb/SOPC0/rom0/rom" type="array">
-      <obj_property name="ElementShortName">rom[0:3][31:0]</obj_property>
-      <obj_property name="ObjectShortName">rom[0:3][31:0]</obj_property>
+      <obj_property name="ElementShortName">rom[0:2][31:0]</obj_property>
+      <obj_property name="ObjectShortName">rom[0:2][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/rom_inst_o" type="array">
+      <obj_property name="ElementShortName">rom_inst_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">rom_inst_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU_romAddr_o" type="array">
+      <obj_property name="ElementShortName">CPU_romAddr_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CPU_romAddr_o[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/signed_i" type="logic">
+      <obj_property name="ElementShortName">signed_i</obj_property>
+      <obj_property name="ObjectShortName">signed_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/dividend_i" type="array">
+      <obj_property name="ElementShortName">dividend_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dividend_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/divider_i" type="array">
+      <obj_property name="ElementShortName">divider_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">divider_i[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/concell_i" type="logic">
+      <obj_property name="ElementShortName">concell_i</obj_property>
+      <obj_property name="ObjectShortName">concell_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/start_i" type="logic">
+      <obj_property name="ElementShortName">start_i</obj_property>
+      <obj_property name="ObjectShortName">start_i</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/result_o" type="array">
+      <obj_property name="ElementShortName">result_o[63:0]</obj_property>
+      <obj_property name="ObjectShortName">result_o[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/success_o" type="logic">
+      <obj_property name="ElementShortName">success_o</obj_property>
+      <obj_property name="ObjectShortName">success_o</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/div_temp" type="array">
+      <obj_property name="ElementShortName">div_temp[31:0]</obj_property>
+      <obj_property name="ObjectShortName">div_temp[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/divider" type="array">
+      <obj_property name="ElementShortName">divider[31:0]</obj_property>
+      <obj_property name="ObjectShortName">divider[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/dividend" type="array">
+      <obj_property name="ElementShortName">dividend[63:0]</obj_property>
+      <obj_property name="ObjectShortName">dividend[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/cnt" type="array">
+      <obj_property name="ElementShortName">cnt[5:0]</obj_property>
+      <obj_property name="ObjectShortName">cnt[5:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/state" type="array">
+      <obj_property name="ElementShortName">state[1:0]</obj_property>
+      <obj_property name="ObjectShortName">state[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/nstate" type="array">
+      <obj_property name="ElementShortName">nstate[1:0]</obj_property>
+      <obj_property name="ObjectShortName">nstate[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/temp_dividend" type="array">
+      <obj_property name="ElementShortName">temp_dividend[31:0]</obj_property>
+      <obj_property name="ObjectShortName">temp_dividend[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/SOPC_tb/SOPC0/CPU0/div0/temp_divider" type="array">
+      <obj_property name="ElementShortName">temp_divider[31:0]</obj_property>
+      <obj_property name="ObjectShortName">temp_divider[31:0]</obj_property>
    </wvobject>
 </wave_config>

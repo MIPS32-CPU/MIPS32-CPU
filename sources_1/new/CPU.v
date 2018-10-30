@@ -30,6 +30,7 @@ module CPU(
     wire ID_branchEnable_o;
     wire [31:0] ID_branchAddr_o;
     wire [1:0] ID_writeHILO_o;
+    wire ID_signed_o;
     
     //link ID/EX and EX
     wire [4:0] ID_EX_ALUop_o;
@@ -37,12 +38,15 @@ module CPU(
     wire [4:0] ID_EX_writeAddr_o;
     wire ID_EX_writeEnable_o;
     wire [1:0] ID_EX_writeHILO_o;
+    wire ID_EX_signed_o;
     
     //link EX and EX/MEM
     wire [31:0] EX_HI_data_o, EX_LO_data_o;
     wire [4:0] EX_writeAddr_o;
     wire EX_writeEnable_o;
     wire [1:0] EX_writeHILO_o;
+    wire [31:0] EX_dividend_o, EX_divider_o;
+    wire EX_pause_o, EX_signed_o, EX_start_o;
        
     //link EX/MEM and MEM
     wire [31:0] EX_MEM_HI_data_o, EX_MEM_LO_data_o;
@@ -61,13 +65,20 @@ module CPU(
     wire [4:0] MEM_WB_writeAddr_o;
     wire MEM_WB_writeEnable_o; 
     wire [1:0] MEM_WB_writeHILO_o;
-             
+    
+    //pause signal
+    wire [5:0] ctr_stall_o;
+    
+    //div module
+    wire [63:0] DIV_result_o;
+    wire DIV_success_o;
+    
     assign romAddr_o = pc_pc_o;
     
     pc pc0(
         .clk(clk),                              .rst(rst), 
         .branchEnable_i(ID_branchEnable_o),    	.branchAddr_i(ID_branchAddr_o), 
-        .pc_o(pc_pc_o)
+        .pc_o(pc_pc_o),							.stall(ctr_stall_o)
     );
     
     
@@ -75,7 +86,8 @@ module CPU(
     IF_ID IF_ID0(
         .clk(clk),                              .rst(rst), 
         .pc_i(pc_pc_o),                         .inst_i(romData_i), 
-        .pc_o(IF_ID_pc_o),                      .inst_o(IF_ID_inst_o)
+        .pc_o(IF_ID_pc_o),                      .inst_o(IF_ID_inst_o),
+        .stall(ctr_stall_o)
     );
     
     
@@ -95,7 +107,8 @@ module CPU(
         .writeEnable_o(ID_writeEnable_o),       .writeAddr_o(ID_writeAddr_o),
         .oprand1_o(ID_oprand1_o),               .oprand2_o(ID_oprand2_o), 
         .branchEnable_o(ID_branchEnable_o),     .branchAddr_o(ID_branchAddr_o), 
-        .ALUop_o(ID_ALUop_o),					.writeHILO_o(ID_writeHILO_o)
+        .ALUop_o(ID_ALUop_o),					.writeHILO_o(ID_writeHILO_o),
+        .signed_o(ID_signed_o)
     );
     
     
@@ -117,7 +130,9 @@ module CPU(
         .writeEnable_i(ID_writeEnable_o),       .ALUop_o(ID_EX_ALUop_o), 
         .oprand1_o(ID_EX_oprand1_o),            .oprand2_o(ID_EX_oprand2_o), 
         .writeAddr_o(ID_EX_writeAddr_o),        .writeEnable_o(ID_EX_writeEnable_o),
-        .writeHILO_i(ID_writeHILO_o),			.writeHILO_o(ID_EX_writeHILO_o)
+        .writeHILO_i(ID_writeHILO_o),			.writeHILO_o(ID_EX_writeHILO_o),
+        .stall(ctr_stall_o),					.signed_o(ID_EX_signed_o),
+        .signed_i(ID_signed_o)
     );
     
    
@@ -125,10 +140,15 @@ module CPU(
     EX EX0(
     	.clk(clk), 								.rst(rst), 
     	.ALUop_i(ID_EX_ALUop_o),				.writeHILO_i(ID_EX_writeHILO_o),
-    	.oprand1_i(ID_EX_oprand1_o),			.oprand2_i(ID_EX_oprand2_o), 			.writeAddr_i(ID_EX_writeAddr_o),
-    	.writeEnable_i(ID_EX_writeEnable_o), 	.HI_data_o(EX_HI_data_o), 
-    	.LO_data_o(EX_LO_data_o),				.writeHILO_o(EX_writeHILO_o),
-    	.writeAddr_o(EX_writeAddr_o),			.writeEnable_o(EX_writeEnable_o)
+    	.oprand1_i(ID_EX_oprand1_o),			.oprand2_i(ID_EX_oprand2_o), 			
+    	.writeAddr_i(ID_EX_writeAddr_o),		.writeEnable_i(ID_EX_writeEnable_o), 	
+    	.HI_data_o(EX_HI_data_o),				.LO_data_o(EX_LO_data_o),				
+    	.writeHILO_o(EX_writeHILO_o),			.writeAddr_o(EX_writeAddr_o),			
+    	.writeEnable_o(EX_writeEnable_o),		.signed_o(EX_signed_o),
+    	.start_o(EX_start_o),					.divider_o(EX_divider_o),
+    	.dividend_o(EX_dividend_o),				.result_div_i(DIV_result_o),
+    	.success_i(DIV_success_o),				.pauseRequest(EX_pause_o),
+    	.signed_i(ID_EX_signed_o)
     );
     
     
@@ -139,7 +159,8 @@ module CPU(
     	.writeAddr_i(EX_writeAddr_o), 			.writeHILO_i(EX_writeHILO_o),
     	.writeEnable_i(EX_writeEnable_o), 		.HI_data_o(EX_MEM_HI_data_o),
     	.LO_data_o(EX_MEM_LO_data_o),			.writeHILO_o(EX_MEM_writeHILO_o),
-    	.writeAddr_o(EX_MEM_writeAddr_o), 		.writeEnable_o(EX_MEM_writeEnable_o)
+    	.writeAddr_o(EX_MEM_writeAddr_o), 		.writeEnable_o(EX_MEM_writeEnable_o),
+    	.stall(ctr_stall_o)
     );
     
   
@@ -161,7 +182,8 @@ module CPU(
 		.writeAddr_i(MEM_writeAddr_o), 			.writeHILO_i(MEM_writeHILO_o),
 		.LO_data_o(MEM_WB_LO_data_o),			.HI_data_o(MEM_WB_HI_data_o),
 		.writeEnable_i(MEM_writeEnable_o), 		.writeHILO_o(MEM_WB_writeHILO_o),
-		.writeAddr_o(MEM_WB_writeAddr_o), 		.writeEnable_o(MEM_WB_writeEnable_o)
+		.writeAddr_o(MEM_WB_writeAddr_o), 		.writeEnable_o(MEM_WB_writeEnable_o),
+		.stall(ctr_stall_o)
         );
     
     
@@ -171,6 +193,19 @@ module CPU(
     	.writeEnable_i(MEM_WB_writeHILO_o),		.HI_data_i(MEM_WB_HI_data_o),
     	.LO_data_i(MEM_WB_LO_data_o),			.HI_data_o(HILO_HI_data_o),
     	.LO_data_o(HILO_LO_data_o)
+    );
+    
+    control control0(
+    	.rst(rst),								.stall_from_exe(EX_pause_o),
+    	.stall(ctr_stall_o)
+    );
+    
+    div div0(
+    	.clk(clk),								.rst(rst),
+    	.signed_i(EX_signed_o),					.dividend_i(EX_dividend_o),
+    	.divider_i(EX_divider_o),				.start_i(EX_start_o),
+    	.concell_i(1'b0),						.result_o(DIV_result_o),
+    	.success_o(DIV_success_o)
     );
 
 endmodule

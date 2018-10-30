@@ -2,7 +2,8 @@ module pc(
     input wire clk,
     input wire rst,
     input wire branchEnable_i,
-    input wire[31:0] branchAddr_i,
+    input wire [31:0] branchAddr_i,
+    input wire [5:0] stall,
     
     output reg[31:0] pc_o 
     );
@@ -10,7 +11,7 @@ module pc(
     always @ (posedge clk) begin
         if(rst == 1'b1) begin
             pc_o <= 32'b0;
-        end else begin
+        end else if(stall[0] == 1'b0) begin
             if(branchEnable_i == 1'b1) begin
                 pc_o <= branchAddr_i;
             end else begin

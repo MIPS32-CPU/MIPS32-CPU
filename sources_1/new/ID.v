@@ -40,7 +40,8 @@ module ID(
     output reg [31:0] oprand2_o,
     output reg branchEnable_o,
     output reg [31:0] branchAddr_o,
-    output reg [4:0] ALUop_o
+    output reg [4:0] ALUop_o,
+    output reg signed_o
 );
     wire [5:0] inst_op = inst_i[31:26];
     wire [4:0] inst_rs = inst_i[25:21];
@@ -117,6 +118,7 @@ module ID(
             branchAddr_o <= 32'b0;
             writeHILO_o <= 2'b00;
             ALUop_o <= `ALU_NOP;
+            signed_o <= 1'b0;
          end else begin
          	//assign the default values
 			readAddr1_o <= 5'b0;
@@ -131,6 +133,7 @@ module ID(
 			branchAddr_o <= 32'b0;
 			ALUop_o <= `ALU_NOP;
 			writeHILO_o <= 2'b00;
+			signed_o <= 1'b0;
 			
           	case (inst_op)
                 `OP_ORI: begin
@@ -167,6 +170,16 @@ module ID(
             				readEnable2_o <= 1'b1;
             				readAddr2_o <= inst_rt;
             				ALUop_o <= `ALU_MULT;
+            			end
+            			
+            			`FUNC_DIV: begin
+            				writeHILO_o <= 2'b11;
+            				readEnable1_o <= 1'b1;
+            				readAddr1_o <= inst_rs;
+            				readEnable2_o <= 1'b1;
+            				readAddr2_o <= inst_rt;
+            				ALUop_o <= `ALU_DIV;
+            				signed_o <= 1'b1;
             			end
             		endcase
             	end

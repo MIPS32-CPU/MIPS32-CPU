@@ -85,7 +85,7 @@
 `define ALU_ADD
 `define ALU_SUB
 `define ALU_MULT				5'b00011
-`define ALU_DIV
+`define ALU_DIV					5'b00100
 `define ALU_AND
 `define ALU_OR                  5'b00001
 `define ALU_XOR
