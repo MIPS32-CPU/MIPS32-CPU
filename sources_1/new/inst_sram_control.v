@@ -1,8 +1,7 @@
 `timescale 1ns/1ps
 `include<defines.v>
 
-module sram_control (
-	input wire clk50,
+module inst_sram_control (
 	input wire rst,
 	input wire [19:0] ramAddr_i,
 	

@@ -27,6 +27,9 @@ module ID(
     input wire [31:0] MEM_writeHI_data_i,
     input wire [31:0] MEM_writeLO_data_i,
     
+    //about the load conflict
+    input wire [3:0] EX_ramOp_i,
+    
     output reg [4:0] readAddr1_o,
     output reg [4:0] readAddr2_o,
     output reg readEnable1_o,
@@ -41,8 +44,15 @@ module ID(
     output reg branchEnable_o,
     output reg [31:0] branchAddr_o,
     output reg [4:0] ALUop_o,
-    output reg signed_o
+    output reg signed_o,
+    
+    output wire [31:0] inst_o,
+    output wire [31:0] pc_o,
+    output reg pauseRequest
 );
+	assign inst_o = inst_i;
+	assign pc_o = pc_i;
+	
     wire [5:0] inst_op = inst_i[31:26];
     wire [4:0] inst_rs = inst_i[25:21];
     wire [4:0] inst_rt = inst_i[20:16];
@@ -50,8 +60,29 @@ module ID(
     wire [4:0] inst_shamt = inst_i[10:6];
     wire [5:0] inst_func = inst_i[5:0];
     
-    reg [31:0] imm;
     reg [1:0] readHILO;
+    reg [31:0] imm;
+    wire load_conflict;
+    
+    //get the stall request 
+    assign load_conflict = (EX_ramOp_i == `MEM_LW) || 
+    					   (EX_ramOp_i == `MEM_LB) || 
+    					   (EX_ramOp_i == `MEM_LH) || 
+    					   (EX_ramOp_i == `MEM_LBU) || 
+    					   (EX_ramOp_i == `MEM_LHU);
+    always @(*) begin
+    	if(rst == 1'b1) begin
+    		pauseRequest <= 1'b0;
+    	end else begin
+    		if(EX_writeAddr_i == readAddr1_o && readEnable1_o == 1'b1 || 
+    		   EX_writeAddr_i == readAddr2_o && readEnable2_o == 1'b1) begin
+    			pauseRequest <= load_conflict;
+    		end else begin
+    			pauseRequest <= 1'b0;
+    		end
+    	end
+    end
+    								
     
     //get the first operand
     always @ (*) begin
@@ -119,6 +150,7 @@ module ID(
             writeHILO_o <= 2'b00;
             ALUop_o <= `ALU_NOP;
             signed_o <= 1'b0;
+            
          end else begin
          	//assign the default values
 			readAddr1_o <= 5'b0;
@@ -134,6 +166,7 @@ module ID(
 			ALUop_o <= `ALU_NOP;
 			writeHILO_o <= 2'b00;
 			signed_o <= 1'b0;
+			pauseRequest <= 1'b0;
 			
           	case (inst_op)
                 `OP_ORI: begin
@@ -148,6 +181,81 @@ module ID(
 				`OP_J: begin
 					branchEnable_o <= 1'b1;			
                 end
+                
+                `OP_SW: begin
+                	readEnable1_o <= 1'b1;
+                	readAddr1_o <= inst_rs;
+                	readEnable2_o <= 1'b1;
+                	readAddr2_o <= inst_rt;
+					
+                	ALUop_o <= `ALU_SW;	
+                end
+                
+                `OP_SB: begin
+                	readEnable1_o <= 1'b1;
+                	readAddr1_o <= inst_rs;
+                	readEnable2_o <= 1'b1;
+                	readAddr2_o <= inst_rt;
+                	ALUop_o <= `ALU_SB;
+                end
+                
+                `OP_SH: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					readEnable2_o <= 1'b1;
+					readAddr2_o <= inst_rt;
+					ALUop_o <= `ALU_SH;
+				end
+                
+                `OP_LW: begin
+                	readEnable1_o <= 1'b1;
+                	readAddr1_o <= inst_rs;
+                	writeEnable_o <= 1'b1;
+                	writeAddr_o <= inst_rt;
+                	imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+                	
+                	ALUop_o <= `ALU_LW;
+                end
+                
+                `OP_LB: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= inst_rt;
+					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+					
+					ALUop_o <= `ALU_LB;
+				end
+				
+				`OP_LH: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= inst_rt;
+					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+					
+					ALUop_o <= `ALU_LH;
+				end
+				
+				`OP_LBU: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= inst_rt;
+					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+					
+					ALUop_o <= `ALU_LBU;
+				end
+								
+				`OP_LHU: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= inst_rt;
+					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+					
+					ALUop_o <= `ALU_LHU;
+				end
                 
             	`OP_SPECIAL: begin
             		case(inst_func)

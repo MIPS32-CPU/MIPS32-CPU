@@ -11,6 +11,8 @@ module EX(
     input wire signed_i,
     input wire [63:0] result_div_i,
     input wire success_i,
+    input wire [31:0] inst_i,
+    input wire [31:0] pc_i,
     
     output reg [4:0] writeAddr_o,
     output reg writeEnable_o,
@@ -23,7 +25,11 @@ module EX(
     output reg [31:0] divider_o,
     output reg start_o,
     
-    output reg pauseRequest
+    output reg pauseRequest,
+    
+    output reg [31:0] storeData_o,
+    output reg [3:0] ramOp_o,
+    output reg [31:0] pc_o
 );
     
     always @ (*) begin
@@ -37,19 +43,26 @@ module EX(
             dividend_o <= 32'b0;
             divider_o <= 32'b0;
             start_o <= 32'b0;
+            storeData_o <= 32'b0;
+            pc_o <= 32'b0;
+            ramOp_o <= `MEM_NOP;
             
         end else begin
         	//assgin the default values
 			writeAddr_o <= writeAddr_i;
 			writeEnable_o <= writeEnable_i;
 			writeHILO_o <= writeHILO_i;
+			pc_o <= pc_i;
 			HI_data_o <= 32'b0;
 			LO_data_o <= 32'b0;
 			signed_o <= 1'b0;
 			dividend_o <= 32'b0;
 			divider_o <= 32'b0;
 			start_o <= 32'b0;
-            
+            storeData_o <= 32'b0;
+			ramOp_o <= `MEM_NOP;
+			pauseRequest <= 1'b0;
+			
             case (ALUop_i)
                 `ALU_OR: begin
 					{HI_data_o, LO_data_o} <= oprand1_i | oprand2_i;
@@ -76,6 +89,45 @@ module EX(
                 		{HI_data_o, LO_data_o} <= result_div_i;
                		end 
                	end
+               	
+               	`ALU_SW: begin
+               		storeData_o <= oprand2_i;
+               		LO_data_o <= oprand1_i + {{16{inst_i[15]}}, inst_i[15:0]};
+               		ramOp_o <= `MEM_SW;
+               	end
+               	
+               	`ALU_SB: begin
+               		storeData_o <= oprand2_i;
+               		LO_data_o <= oprand1_i + {{16{inst_i[15]}}, inst_i[15:0]};
+               		ramOp_o <= `MEM_SB;
+               	end
+               	
+               	`ALU_SH: begin
+					storeData_o <= oprand2_i;
+					LO_data_o <= oprand1_i + {{16{inst_i[15]}}, inst_i[15:0]};
+					ramOp_o <= `MEM_SH;
+				end
+               	               	
+               	`ALU_LW: begin
+               		LO_data_o <= oprand1_i + oprand2_i;
+               		ramOp_o <= `MEM_LW;
+               	end	
+               	
+				`ALU_LB: begin
+					LO_data_o <= oprand1_i + oprand2_i;
+					ramOp_o <= `MEM_LB;
+				end	
+				
+				`ALU_LBU: begin
+					LO_data_o <= oprand1_i + oprand2_i;
+					ramOp_o <= `MEM_LBU;
+				end	
+				
+				`ALU_LHU: begin
+					LO_data_o <= oprand1_i + oprand2_i;
+					ramOp_o <= `MEM_LHU;
+				end	
+               	
                 default: begin
                 end
             endcase

@@ -14,16 +14,19 @@ module sram_control (
 	output reg CE_n_o,
 	output reg [3:0] be_n_o,
 	output reg [19:0] ramAddr_o,
+	output reg success_o,
 	
 	inout wire [31:0] data_io
 );	
 	reg [31:0] data_io_reg;
-	reg [1:0] state, nstate;
+	reg [2:0] state, nstate;
 	assign data_io = data_io_reg;
 	
-	parameter IDLE = 2'b00,
-			  READ = 2'b01,
-			  WRITE = 2'b10;
+	parameter IDLE = 3'b00,
+			  READ = 3'b01,
+			  WRITE = 3'b10,
+			  READEND = 3'b11,
+			  WRITEEND = 3'b100;
 			  
 	always @(posedge clk50 or posedge rst) begin
 		if(rst == 1'b1) begin
@@ -42,6 +45,7 @@ module sram_control (
 			ramAddr_o <= 20'b0;
 			loadData_o <= 32'b0;
 			data_io_reg <= 32'bz;
+			success_o <= 1'b0;
 			state <= IDLE;
 		end else begin
 			
@@ -54,6 +58,7 @@ module sram_control (
 					loadData_o <= 32'b0;
 					data_io_reg <= storeData_i;
 					ramAddr_o <= ramAddr_i;
+					success_o <= 1'b0;
 					
 					case(ramOp_i) 
 						`MEM_LW: begin
@@ -62,6 +67,37 @@ module sram_control (
 						`MEM_SW: begin
 							nstate <= WRITE;
 						end
+						
+						`MEM_SB: begin
+							be_n_o <= 4'b1110;
+							nstate <= WRITE;
+						end
+						
+						`MEM_SH: begin
+							be_n_o <= 4'b1100;
+							nstate <= WRITE;
+						end
+						
+						`MEM_LB: begin
+							be_n_o <= 4'b1110;
+							nstate <= READ;
+						end
+						
+						`MEM_LH: begin
+							be_n_o <= 4'b1100;
+							nstate <= READ;
+						end
+						
+						`MEM_LBU: begin
+							be_n_o <= 4'b0111;
+							nstate <= READ;
+						end
+						
+						`MEM_LHU: begin
+							be_n_o <= 4'b0011;
+							nstate <= READ;
+						end
+
 						default: begin
 							nstate <= IDLE;
 						end
@@ -71,21 +107,55 @@ module sram_control (
 				READ: begin
 					CE_n_o <= 1'b0;
 					OE_n_o <= 1'b0;
-					be_n_o <= 4'b0;
+					//be_n_o <= 4'b0;
 					data_io_reg <= 32'bz;
-					loadData_o <= data_io;
 					
-					if(ramOp_i != 4'b0011) begin
-						nstate <= IDLE;
-					end else begin
-						nstate <= READ;
-					end
+					case(ramOp_i) 
+						`MEM_LB: begin
+							loadData_o <= {{24{data_io[7]}}, data_io[7:0]};
+						end
+						
+						`MEM_LBU: begin
+							loadData_o <= {{24{data_io[7]}}, data_io[31:24]};
+						end
+												
+						`MEM_LH: begin
+							loadData_o <= {{16{data_io[15]}}, data_io[15:0]};
+						end
+						
+						`MEM_LHU: begin
+							loadData_o <= {{16{data_io[15]}}, data_io[31:16]};
+						end
+						
+						default: begin
+							loadData_o <= data_io;
+						end
+					endcase
+					//success_o <= 1'b1;
+					nstate <= READEND;
+					
+					
 				end
 				
 				WRITE: begin
 					CE_n_o <= 1'b0;
 					WE_n_o <= 1'b0;
-					be_n_o <= 4'b0;
+					//be_n_o <= 4'b0;
+					
+					//success_o <= 1'b1;
+					nstate <= WRITEEND;
+				end
+				
+				READEND: begin
+				
+					success_o <= 1'b1;
+					nstate <= IDLE;
+				
+				end
+				
+				WRITEEND: begin
+					success_o <= 1'b1;
+					WE_n_o <= 1'b1;
 					nstate <= IDLE;
 				end
 			
