@@ -9,7 +9,7 @@ module MMU(
 	output reg [3:0] memOp_o,
 	output reg [31:0] loadData_o,
 	output reg [31:0] storeData_o,
-	output reg [31:0] physicalAddr_o
+	output reg [19:0] physicalAddr_o
 );
 	always @(*) begin 
 		if(rst == 1'b1) begin
@@ -21,7 +21,7 @@ module MMU(
 			memOp_o <= memOp_i;
 			loadData_o <= Sram_ramData_i;
 			storeData_o <= storeData_i;
-			physicalAddr_o <= {8'b0, virtualAddr_i[23:0]};
+			physicalAddr_o <= virtualAddr_i[19:0];
 		end
 	end
 endmodule

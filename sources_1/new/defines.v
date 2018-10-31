@@ -79,7 +79,7 @@
 `define RS_MFC0					5'b00000
 `define RS_MTC0					5'b00100
 
-//****************ALU Operations Macro definations********************
+//****************ALU Operations Macro Definations********************
 `define ALU_NOP                 5'b00000
 `define ALU_MOV					5'b00010
 `define ALU_ADD
@@ -94,3 +94,13 @@
 `define ALU_SRL
 `define ALU_SRA
 
+
+//***************MEM Operations Macro Definations**********************
+`define MEM_SB					4'b0001
+`define MEM_SH					4'b0010
+`define	MEM_SW					4'b0011
+`define MEM_LBU					4'b0100
+`define MEM_LHU					4'b0101
+`define MEM_LB					4'b0110
+`define MEM_LH					4'b0111
+`define MEM_LW					4'b1000
