@@ -9,7 +9,7 @@ module SOPC_tb;
 
 	initial begin
 		rst = 1'b1;
-		#195 rst = 1'b0;
+		#25 rst = 1'b0;
 		#2000 $stop;
 	end
 	
