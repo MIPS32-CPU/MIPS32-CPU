@@ -31,7 +31,9 @@ module EX(
     output reg [3:0] ramOp_o,
     output reg [31:0] pc_o
 );
-    
+    reg [32:0] temp;
+
+
     always @ (*) begin
         if(rst == 1'b1) begin
             writeAddr_o <= 5'b0;
@@ -64,16 +66,78 @@ module EX(
 			pauseRequest <= 1'b0;
 			
             case (ALUop_i)
+				`ALU_MOV: begin
+					if(writeHILO_i == 2'b10) begin
+						HI_data_o <= oprand1_i;
+					end else if(writeHILO_i == 2'b01) begin
+						LO_data_o <= oprand1_i;
+					end else begin
+						LO_data_o <= oprand1_i;
+					end
+				end
+
+				`ALU_ADD: begin
+					{HI_data_o, LO_data_o} <= oprand1_i + oprand2_i;
+				end
+
+				`ALU_SUB: begin
+					{HI_data_o, LO_data_o} <= {oprand1_i[31], oprand1_i} - {oprand2_i[31], oprand2_i};
+				end
+
+				`ALU_AND: begin
+					{HI_data_o, LO_data_o} <= oprand1_i & oprand2_i;
+				end
+
                 `ALU_OR: begin
 					{HI_data_o, LO_data_o} <= oprand1_i | oprand2_i;
 			 	end
 			 	
-                `ALU_MOV: begin
-                	{HI_data_o, LO_data_o} <= oprand1_i;
-                end
+				`ALU_XOR: begin
+					{HI_data_o, LO_data_o} <= oprand1_i ^ oprand2_i;
+			 	end
+
+				`ALU_NOR: begin
+					{HI_data_o, LO_data_o} <= ~(oprand1_i | oprand2_i);
+			 	end
                 
+                `ALU_SLL: begin
+					{HI_data_o, LO_data_o} <= oprand1_i << oprand2_i;
+				end
+
+				`ALU_SRL: begin
+					{HI_data_o, LO_data_o} <= oprand1_i >> oprand2_i;
+				end
+
+				`ALU_SRA: begin
+					{HI_data_o, LO_data_o} <= ($signed(oprand1_i)) >>> oprand2_i;
+				end
+
+				`ALU_BAJ: begin
+					{HI_data_o, LO_data_o} <= oprand2_i;
+				end
+
+				`ALU_SLT: begin
+					if(signed_i == 1'b1) begin
+						if(oprand1_i[31] == 1'b1 && oprand2_i[31] == 1'b0) begin
+							LO_data_o <= 1'b1;
+						end else if(oprand1_i[31] == 1'b0 && oprand2_i[31] == 1'b1) begin
+							LO_data_o <= 1'b0;
+						end else begin
+							LO_data_o <= (oprand1_i < oprand2_i);
+						end
+					end else begin
+						temp <= {1'b0, oprand1_i} - {1'b0, oprand2_i};
+						LO_data_o <= temp[32];
+					end
+
+				end
+
                 `ALU_MULT: begin
-                	{HI_data_o, LO_data_o} <= oprand1_i * oprand2_i;
+					if(signed_i == 1'b1) begin
+                		{HI_data_o, LO_data_o} <= ($signed(oprand1_i)) * ($signed(oprand2_i));
+					end else begin
+						{HI_data_o, LO_data_o} <= {1'b0, oprand1_i} * {1'b0, oprand2_i};
+					end
                 end
                 
                 `ALU_DIV: begin
@@ -127,6 +191,10 @@ module EX(
 					LO_data_o <= oprand1_i + oprand2_i;
 					ramOp_o <= `MEM_LHU;
 				end	
+				
+				`ALU_BAJ: begin
+					LO_data_o <= oprand2_i;
+               	end
                	
                 default: begin
                 end

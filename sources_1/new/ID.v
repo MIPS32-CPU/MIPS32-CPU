@@ -62,7 +62,12 @@ module ID(
     
     reg [1:0] readHILO;
     reg [31:0] imm;
+    
     wire load_conflict;
+    wire [31:0] pc_plus_4, pc_plus_8;
+    
+    assign pc_plus_4 = pc_i + 32'h4;
+    assign pc_plus_8 = pc_i + 32'h8;
     
     //get the stall request 
     assign load_conflict = (EX_ramOp_i == `MEM_LW) || 
@@ -150,6 +155,7 @@ module ID(
             writeHILO_o <= 2'b00;
             ALUop_o <= `ALU_NOP;
             signed_o <= 1'b0;
+			pauseRequest <= 1'b0;
             
          end else begin
          	//assign the default values
@@ -169,25 +175,13 @@ module ID(
 			pauseRequest <= 1'b0;
 			
           	case (inst_op)
-                `OP_ORI: begin
-					readEnable1_o <= 1'b1;
-					readAddr1_o <= inst_rs;
-					imm <= {16'b0, inst_i[15:0]};
-					writeEnable_o <= 1'b1;
-					writeAddr_o <= inst_rt; 
-					ALUop_o <= `ALU_OR;	
-				end
-				
-				`OP_J: begin
-					branchEnable_o <= 1'b1;			
-                end
                 
+                /**********load/store instructions***********/
                 `OP_SW: begin
                 	readEnable1_o <= 1'b1;
                 	readAddr1_o <= inst_rs;
                 	readEnable2_o <= 1'b1;
                 	readAddr2_o <= inst_rt;
-					
                 	ALUop_o <= `ALU_SW;	
                 end
                 
@@ -213,7 +207,6 @@ module ID(
                 	writeEnable_o <= 1'b1;
                 	writeAddr_o <= inst_rt;
                 	imm <= {{16{inst_i[15]}}, inst_i[15:0]};
-                	
                 	ALUop_o <= `ALU_LW;
                 end
                 
@@ -223,7 +216,6 @@ module ID(
 					writeEnable_o <= 1'b1;
 					writeAddr_o <= inst_rt;
 					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
-					
 					ALUop_o <= `ALU_LB;
 				end
 				
@@ -233,7 +225,6 @@ module ID(
 					writeEnable_o <= 1'b1;
 					writeAddr_o <= inst_rt;
 					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
-					
 					ALUop_o <= `ALU_LH;
 				end
 				
@@ -243,7 +234,6 @@ module ID(
 					writeEnable_o <= 1'b1;
 					writeAddr_o <= inst_rt;
 					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
-					
 					ALUop_o <= `ALU_LBU;
 				end
 								
@@ -253,12 +243,350 @@ module ID(
 					writeEnable_o <= 1'b1;
 					writeAddr_o <= inst_rt;
 					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
-					
 					ALUop_o <= `ALU_LHU;
 				end
+                /**********load/store end*********/
                 
+                `OP_ADDI: begin
+                	readEnable1_o <= 1'b1;
+                	readAddr1_o <= inst_rs;
+                	writeEnable_o <= 1'b1;
+                	writeAddr_o <= inst_rt;
+                	imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+                	signed_o <= 1'b1;
+                	ALUop_o <= `ALU_ADD;
+                end
+                
+                `OP_ADDIU: begin
+                	readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= inst_rt;
+					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+					ALUop_o <= `ALU_ADD;
+				end
+				
+				`OP_SLTI: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= inst_rt;
+					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+					signed_o <= 1'b1;
+					ALUop_o <= `ALU_SLT;
+				end
+				
+				`OP_SLTIU: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= inst_rt;
+					imm <= {{16{inst_i[15]}}, inst_i[15:0]};
+					ALUop_o <= `ALU_SLT;
+				end
+				
+				`OP_ANDI: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					imm <= {16'b0, inst_i[15:0]};
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= inst_rt;
+					ALUop_o <= `ALU_AND;
+				end
+				
+				
+                `OP_ORI: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					imm <= {16'b0, inst_i[15:0]};
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= inst_rt;
+					ALUop_o <= `ALU_OR;	
+				end
+				
+				`OP_XORI: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					imm <= {16'b0, inst_i[15:0]};
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= inst_rt;
+					ALUop_o <= `ALU_XOR;	
+				end
+				
+				
+				`OP_LUI: begin
+					imm <= {inst_i[15:0], 16'b0};
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= inst_rt;
+					ALUop_o <= `ALU_MOV;
+				end
+					
+				`OP_J: begin
+    				branchEnable_o <= 1'b1;
+    				branchAddr_o <= {pc_plus_4[31:28], inst_i[25:0], 2'b0};
+    			end
+    			
+    			`OP_JAL: begin
+    				branchEnable_o <= 1'b1;
+					writeEnable_o <= 1'b1;
+					writeAddr_o <= 5'd31;
+					ALUop_o <= `ALU_BAJ;
+					imm <= pc_plus_8;
+    				branchAddr_o <= {pc_plus_4[31:28], inst_i[25:0], 2'b0};
+    			end
+    			
+    			`OP_BEQ: begin
+    				readEnable1_o <= 1'b1;
+    				readAddr1_o <= inst_rs;
+    				readEnable2_o <= 1'b1;
+    				readAddr2_o <= inst_rt;
+    				
+    				if(oprand1_o == oprand2_o) begin
+    					branchEnable_o <= 1'b1;
+    					branchAddr_o <= pc_plus_4 + {{14{inst_i[15]}}, inst_i[15:0], 2'b0};
+    				end else begin
+    					branchEnable_o <= 1'b0;
+    				end
+    			end
+    			
+    			`OP_BNE: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					readEnable2_o <= 1'b1;
+					readAddr2_o <= inst_rt;
+					
+					if(oprand1_o != oprand2_o) begin
+						branchEnable_o <= 1'b1;
+						branchAddr_o <= pc_plus_4 + {{14{inst_i[15]}}, inst_i[15:0], 2'b0};
+					end else begin
+						branchEnable_o <= 1'b0;
+					end
+				end
+    			
+    			`OP_BLEZ: begin
+    				readEnable1_o <= 1'b1;
+    				readAddr1_o <= inst_rs;
+    				
+    				if(oprand1_o[31] == 1'b1 || oprand1_o == 32'b0) begin
+    					branchEnable_o <= 1'b1;
+    					branchAddr_o <= pc_plus_4 + {{14{inst_i[15]}}, inst_i[15:0], 2'b0};
+					end else begin
+						branchEnable_o <= 1'b0;
+					end
+				end
+    			
+    			`OP_BGTZ: begin
+					readEnable1_o <= 1'b1;
+					readAddr1_o <= inst_rs;
+					
+					if(oprand1_o[31] != 1'b1 && oprand1_o != 32'b0) begin
+						branchEnable_o <= 1'b1;
+						branchAddr_o <= pc_plus_4 + {{14{inst_i[15]}}, inst_i[15:0], 2'b0};
+					end else begin
+						branchEnable_o <= 1'b0;
+					end
+				end
+                				
             	`OP_SPECIAL: begin
             		case(inst_func)
+            			`FUNC_ADD: begin
+            				readEnable1_o <= 1'b1;
+            				readAddr1_o <= inst_rs;
+            				readEnable2_o <= 1'b1;
+            				readAddr2_o <= inst_rt;
+            				writeEnable_o <= 1'b1;
+            				writeAddr_o <= inst_rd;
+            				signed_o <= 1'b1;
+            				ALUop_o <= `ALU_ADD;
+            			end
+            			
+            			`FUNC_ADDU: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_ADD;
+						end
+						
+						`FUNC_SUB: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							signed_o <= 1'b1;
+							ALUop_o <= `ALU_SUB;
+						end
+            			
+            			`FUNC_SUBU: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_SUB;
+						end
+						
+						`FUNC_AND: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_AND;
+						end
+						
+						`FUNC_OR: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_OR;
+						end
+						
+						`FUNC_XOR: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_XOR;
+						end	
+
+						`FUNC_NOR: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_NOR;
+						end	
+						
+						`FUNC_SLT: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							signed_o <= 1'b1;
+							ALUop_o <= `ALU_SLT;
+						end	
+
+						`FUNC_SLTU: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_SLT;
+						end	
+
+						`FUNC_SLL: begin	
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rt;
+							imm <= inst_shamt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_SLL;
+						end
+
+						`FUNC_SRL: begin	
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rt;
+							imm <= inst_shamt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_SRL;
+						end
+
+						`FUNC_SRA: begin	
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rt;
+							imm <= inst_shamt;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_SRA;
+						end
+
+						`FUNC_SLLV: begin	
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rt;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rs;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_SLL;
+						end
+
+						`FUNC_SRLV: begin	
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rt;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rs;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_SRL;
+						end
+
+						`FUNC_SRAV: begin	
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rt;
+							readEnable2_o <= 1'b1;
+							readAddr2_o <= inst_rs;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							ALUop_o <= `ALU_SRA;
+						end
+
+						`FUNC_MULT: begin
+            				writeHILO_o <= 2'b11;
+            				readEnable1_o <= 1'b1;
+            				readAddr1_o <= inst_rs;
+            				readEnable2_o <= 1'b1;
+            				readAddr2_o <= inst_rt;
+							signed_o <= 1'b1;
+            				ALUop_o <= `ALU_MULT;
+            			end
+
+						`FUNC_MULTU: begin
+							writeHILO_o <= 2'b11;
+            				readEnable1_o <= 1'b1;
+            				readAddr1_o <= inst_rs;
+            				readEnable2_o <= 1'b1;
+            				readAddr2_o <= inst_rt;
+            				ALUop_o <= `ALU_MULT;
+            			end
+
+						`FUNC_DIV: begin
+            				writeHILO_o <= 2'b11;
+            				readEnable1_o <= 1'b1;
+            				readAddr1_o <= inst_rs;
+            				readEnable2_o <= 1'b1;
+            				readAddr2_o <= inst_rt;
+							signed_o <= 1'b1;
+            				ALUop_o <= `ALU_DIV;
+            			end
+
+						`FUNC_DIVU: begin
+            				writeHILO_o <= 2'b11;
+            				readEnable1_o <= 1'b1;
+            				readAddr1_o <= inst_rs;
+            				readEnable2_o <= 1'b1;
+            				readAddr2_o <= inst_rt;
+            				ALUop_o <= `ALU_DIV;
+            			end
+
             			`FUNC_MFHI: begin
             				readHILO <= 2'b10;
             				writeEnable_o <= 1'b1;
@@ -267,47 +595,109 @@ module ID(
             			end
             			
             			`FUNC_MTHI: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
             				writeHILO_o <= 2'b10;
             				ALUop_o <= `ALU_MOV;
             			end
             			
-            			`FUNC_MULT: begin
-            				writeHILO_o <= 2'b11;
-            				readEnable1_o <= 1'b1;
-            				readAddr1_o <= inst_rs;
-            				readEnable2_o <= 1'b1;
-            				readAddr2_o <= inst_rt;
-            				ALUop_o <= `ALU_MULT;
+            			`FUNC_MFLO: begin
+            				readHILO <= 2'b01;
+            				writeEnable_o <= 1'b1;
+            				writeAddr_o <= inst_rd;
+            				ALUop_o <= `ALU_MOV;
             			end
             			
-            			`FUNC_DIV: begin
-            				writeHILO_o <= 2'b11;
-            				readEnable1_o <= 1'b1;
-            				readAddr1_o <= inst_rs;
-            				readEnable2_o <= 1'b1;
-            				readAddr2_o <= inst_rt;
-            				ALUop_o <= `ALU_DIV;
-            				signed_o <= 1'b1;
+            			`FUNC_MTLO: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+            				writeHILO_o <= 2'b01;
+            				ALUop_o <= `ALU_MOV;
             			end
+
+						`FUNC_JR: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							branchEnable_o <= 1'b1;
+							branchAddr_o <= oprand1_o;
+						end
+						
+						`FUNC_JALR: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= inst_rd;
+							imm <= pc_plus_8;
+							ALUop_o <= `ALU_BAJ;
+							
+							branchEnable_o <= 1'b1;
+							branchAddr_o <= oprand1_o;
+						end
             		endcase
             	end
-            	
-            	default: begin
-            	end
+
+				`OP_REGIMM: begin
+					case(inst_rt) 
+						`RT_BLTZ: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							
+							if(oprand1_o[31] == 1'b1) begin
+								branchEnable_o <= 1'b1;
+								branchAddr_o <= pc_plus_4 + {{14{inst_i[15]}}, inst_i[15:0], 2'b0};
+							end else begin
+								branchEnable_o <= 1'b0;
+							end
+						end
+						
+						`RT_BGEZ: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							
+							if(oprand1_o[31] == 1'b0) begin
+								branchEnable_o <= 1'b1;
+								branchAddr_o <= pc_plus_4 + {{14{inst_i[15]}}, inst_i[15:0], 2'b0};
+							end else begin
+								branchEnable_o <= 1'b0;
+							end
+						end
+						
+						`RT_BLTZAL: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= 5'd31;
+							imm <= pc_plus_8;
+							ALUop_o <= `ALU_BAJ;
+							
+							if(oprand1_o[31] == 1) begin
+								branchEnable_o <= 1'b1;
+								branchAddr_o <= pc_plus_4 + {{14{inst_i[15]}}, inst_i[15:0], 2'b0};
+							end else begin
+								branchEnable_o <= 1'b0;
+							end
+						end
+						
+						`RT_BGEZAL: begin
+							readEnable1_o <= 1'b1;
+							readAddr1_o <= inst_rs;
+							writeEnable_o <= 1'b1;
+							writeAddr_o <= 5'd31;
+							imm <= pc_plus_8;
+							ALUop_o <= `ALU_BAJ;
+							
+							if(oprand1_o[31] == 0) begin
+								branchEnable_o <= 1'b1;
+								branchAddr_o <= pc_plus_4 + {{14{inst_i[15]}}, inst_i[15:0], 2'b0};
+							end else begin
+								branchEnable_o <= 1'b0;
+							end
+						end
+					endcase
+				end
+
             endcase
         end
     end
-    
-    //branch instructions
-    always @(*) begin
-    	if(branchEnable_o == 1'b1) begin
-    		case (inst_op) 
-    			`OP_J: begin
-    				branchAddr_o <= {pc_i[31:28], inst_i[25:0], 2'b0};
-    			end
-    		endcase
-    	end
-    end
-
 endmodule
       

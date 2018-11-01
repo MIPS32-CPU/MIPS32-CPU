@@ -1,4 +1,3 @@
-`timescale 1ns/1ps
 `include<defines.v>
 
 module sram_control (
@@ -54,7 +53,7 @@ module sram_control (
 					WE_n_o <= 1'b1;
 					OE_n_o <= 1'b1;
 					CE_n_o <= 1'b0;
-					be_n_o <= 4'b0;
+					be_n_o <= 4'b1111;
 					loadData_o <= 32'b0;
 					data_io_reg <= storeData_i;
 					ramAddr_o <= ramAddr_i;
@@ -69,32 +68,30 @@ module sram_control (
 						end
 						
 						`MEM_SB: begin
-							be_n_o <= 4'b1110;
 							nstate <= WRITE;
 						end
 						
 						`MEM_SH: begin
-							be_n_o <= 4'b1100;
 							nstate <= WRITE;
 						end
 						
 						`MEM_LB: begin
-							be_n_o <= 4'b1110;
+							//be_n_o <= 4'b1110;
 							nstate <= READ;
 						end
 						
 						`MEM_LH: begin
-							be_n_o <= 4'b1100;
+							//be_n_o <= 4'b1100;
 							nstate <= READ;
 						end
 						
 						`MEM_LBU: begin
-							be_n_o <= 4'b0111;
+							//be_n_o <= 4'b0111;
 							nstate <= READ;
 						end
 						
 						`MEM_LHU: begin
-							be_n_o <= 4'b0011;
+							//be_n_o <= 4'b0011;
 							nstate <= READ;
 						end
 
@@ -107,7 +104,7 @@ module sram_control (
 				READ: begin
 					CE_n_o <= 1'b0;
 					OE_n_o <= 1'b0;
-					//be_n_o <= 4'b0;
+					be_n_o <= 4'b0;
 					data_io_reg <= 32'bz;
 					
 					case(ramOp_i) 
@@ -116,7 +113,7 @@ module sram_control (
 						end
 						
 						`MEM_LBU: begin
-							loadData_o <= {{24{data_io[7]}}, data_io[31:24]};
+							loadData_o <= {24'b0, data_io[31:24]};
 						end
 												
 						`MEM_LH: begin
@@ -124,7 +121,7 @@ module sram_control (
 						end
 						
 						`MEM_LHU: begin
-							loadData_o <= {{16{data_io[15]}}, data_io[31:16]};
+							loadData_o <= {16'b0, data_io[31:16]};
 						end
 						
 						default: begin
@@ -140,7 +137,19 @@ module sram_control (
 				WRITE: begin
 					CE_n_o <= 1'b0;
 					WE_n_o <= 1'b0;
-					//be_n_o <= 4'b0;
+					case(ramOp_i)
+						`MEM_SW: begin
+							be_n_o <= 4'b0;
+						end
+
+						`MEM_SH: begin
+							be_n_o <= 4'b1100;
+						end
+
+						`MEM_SB: begin
+							be_n_o <= 4'b1110;
+						end
+					endcase
 					
 					//success_o <= 1'b1;
 					nstate <= WRITEEND;
@@ -156,6 +165,7 @@ module sram_control (
 				WRITEEND: begin
 					success_o <= 1'b1;
 					WE_n_o <= 1'b1;
+					be_n_o <= 4'b1111;
 					nstate <= IDLE;
 				end
 			

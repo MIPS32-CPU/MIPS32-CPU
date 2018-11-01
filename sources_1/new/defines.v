@@ -84,7 +84,6 @@
 `define ALU_MOV					5'b00001
 `define ALU_ADD					5'b00010
 `define ALU_SUB					5'b00011
-`define ALU_MULT				5'b00011
 `define ALU_DIV					5'b00100
 `define ALU_AND					5'b00101
 `define ALU_OR                  5'b00110
@@ -101,6 +100,9 @@
 `define ALU_LB					5'b10001
 `define ALU_LH					5'b10010
 `define ALU_LW					5'b10011
+`define ALU_MULT				5'b10100
+`define ALU_BAJ					5'b10101 //branch and jump alu operations
+`define ALU_SLT					5'b10110
 
 //***************MEM Operations Macro Definations**********************
 `define MEM_NOP					4'b0000
@@ -113,5 +115,3 @@
 `define MEM_LH					4'b0111
 `define MEM_LW					4'b1000
 
-`define MAX 					32'hFFFFFFFF
-`define ZERO					32'b0

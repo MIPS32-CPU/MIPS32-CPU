@@ -11,7 +11,7 @@ module div(
 	output reg success_o
 );
 
-	wire [31:0] div_temp;
+	wire [32:0] div_temp;
 	reg [31:0] divider;
 	reg [64:0] dividend;
 	reg [5:0] cnt;
@@ -19,7 +19,7 @@ module div(
 	reg [31:0] temp_dividend;
 	reg [31:0] temp_divider;
 	
-	assign div_temp = dividend[63:32] - divider;
+	assign div_temp = {1'b0, dividend[63:32]} - {1'b0, divider};
 	
 	parameter DIV_FREE = 2'b00,
 			  DIV_ZERO = 2'b01,
@@ -109,7 +109,7 @@ module div(
 				
 				DIV_ON: begin
 				    if(concell_i == 1'b0 && cnt[5] == 1'b0) begin
-                        if(div_temp[31] == 1'b1) begin
+                        if(div_temp[32] == 1'b1) begin
                             dividend <= {dividend[63:0], 1'b0};
                         end else begin
                             dividend <= {div_temp[31:0], dividend[31:0], 1'b1};
