@@ -76,22 +76,18 @@ module sram_control (
 						end
 						
 						`MEM_LB: begin
-							//be_n_o <= 4'b1110;
 							nstate <= READ;
 						end
 						
 						`MEM_LH: begin
-							//be_n_o <= 4'b1100;
 							nstate <= READ;
 						end
 						
 						`MEM_LBU: begin
-							//be_n_o <= 4'b0111;
 							nstate <= READ;
 						end
 						
 						`MEM_LHU: begin
-							//be_n_o <= 4'b0011;
 							nstate <= READ;
 						end
 
@@ -128,7 +124,7 @@ module sram_control (
 							loadData_o <= data_io;
 						end
 					endcase
-					//success_o <= 1'b1;
+					
 					nstate <= READEND;
 					
 					
@@ -151,7 +147,7 @@ module sram_control (
 						end
 					endcase
 					
-					//success_o <= 1'b1;
+					
 					nstate <= WRITEEND;
 				end
 				

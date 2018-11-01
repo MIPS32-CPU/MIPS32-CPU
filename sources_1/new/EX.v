@@ -181,6 +181,11 @@ module EX(
 					LO_data_o <= oprand1_i + oprand2_i;
 					ramOp_o <= `MEM_LB;
 				end	
+
+				`ALU_LH: begin
+					LO_data_o <= oprand1_i + oprand2_i;
+					ramOp_o <= `MEM_LH;
+				end	
 				
 				`ALU_LBU: begin
 					LO_data_o <= oprand1_i + oprand2_i;
